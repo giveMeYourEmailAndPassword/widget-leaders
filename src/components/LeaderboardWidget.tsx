@@ -1,13 +1,15 @@
-import { useMemo } from 'react';
-import { Medal, Trophy, User, Loader2 } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { Medal, Trophy, User, Loader2, Sun, Moon } from 'lucide-react';
 import { useManagersLeaderboard, useExchangeRates, useUser } from '../api';
-import { formatCurrency, getCommissionInCurrencies, cn } from '../lib/utils';
+import { formatCurrency, getCommissionInCurrencies } from '../lib/utils';
 import { Contract } from '../types';
 
 export interface LeaderboardWidgetProps {
   startDate: Date;
   endDate: Date;
   officeId?: string;
+  isDarkMode?: boolean;
+  onThemeToggle?: () => void;
 }
 
 interface LeaderboardEntry {
@@ -26,6 +28,8 @@ export function LeaderboardWidget({
   startDate,
   endDate,
   officeId,
+  isDarkMode = false,
+  onThemeToggle,
 }: LeaderboardWidgetProps) {
   const { data: user } = useUser();
   const { data: contracts, isLoading } = useManagersLeaderboard(
@@ -104,11 +108,31 @@ export function LeaderboardWidget({
 
   if (isLoading) {
     return (
-      <div className="space-y-3">
-        <h3 className="text-sm font-medium text-gray-700">Лидерборд</h3>
+      <div className={`w-full p-4 rounded-lg border shadow-sm ${
+        isDarkMode ? 'bg-gray-800/90 border-gray-700' : 'bg-white/80 border-gray-200'
+      }`}>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className={`text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+            Лидерборд
+          </h3>
+          <button
+            onClick={onThemeToggle}
+            className={`p-2 rounded-lg transition-colors ${
+              isDarkMode
+                ? 'bg-gray-700 text-yellow-400 hover:bg-gray-600'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}
+          >
+            {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          </button>
+        </div>
         <div className="flex flex-col items-center justify-center py-8">
-          <Loader2 className="h-8 w-8 animate-spin text-blue-500 mb-2" />
-          <p className="text-sm text-gray-500">Загрузка рейтинга...</p>
+          <Loader2 className={`h-8 w-8 animate-spin mb-2 ${
+            isDarkMode ? 'text-blue-400' : 'text-blue-500'
+          }`} />
+          <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>
+            Загрузка рейтинга...
+          </p>
         </div>
       </div>
     );
@@ -116,11 +140,31 @@ export function LeaderboardWidget({
 
   if (leaderboard.length === 0) {
     return (
-      <div className="space-y-3">
-        <h3 className="text-sm font-medium text-gray-700">Лидерборд</h3>
+      <div className={`w-full p-4 rounded-lg border shadow-sm ${
+        isDarkMode ? 'bg-gray-800/90 border-gray-700' : 'bg-white/80 border-gray-200'
+      }`}>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className={`text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+            Лидерборд
+          </h3>
+          <button
+            onClick={onThemeToggle}
+            className={`p-2 rounded-lg transition-colors ${
+              isDarkMode
+                ? 'bg-gray-700 text-yellow-400 hover:bg-gray-600'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}
+          >
+            {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          </button>
+        </div>
         <div className="text-center py-8">
-          <User className="h-12 w-12 text-gray-300 mx-auto mb-2" />
-          <p className="text-sm text-gray-500">Нет данных о менеджерах</p>
+          <User className={`h-12 w-12 mx-auto mb-2 ${
+            isDarkMode ? 'text-gray-600' : 'text-gray-300'
+          }`} />
+          <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>
+            Нет данных о менеджерах
+          </p>
         </div>
       </div>
     );
@@ -139,86 +183,150 @@ export function LeaderboardWidget({
     return (
       <div
         key={entry.managerId}
-        className={cn(
-          'flex items-center justify-between p-3 rounded-lg transition-all',
+        className={`grid grid-cols-12 gap-2 items-center p-2 rounded-lg transition-all text-sm ${
           entry.isCurrentUser
-            ? 'bg-blue-50 border-l-4 border-blue-500 shadow-sm'
-            : 'bg-gray-50'
-        )}
+            ? isDarkMode
+              ? 'bg-blue-900/50 border-l-4 border-blue-400 shadow-sm'
+              : 'bg-blue-50 border-l-4 border-blue-500 shadow-sm'
+            : isDarkMode
+              ? 'bg-gray-700/30 hover:bg-gray-700/50'
+              : 'bg-gray-50 hover:bg-gray-100'
+        }`}
       >
-        <div className="flex items-center gap-3 flex-1 min-w-0">
-          {/* Rank or Medal */}
-          {showRank && (
-            <div className="flex-shrink-0 w-8 flex items-center justify-center">
-              {entry.rank <= 3 ? (
-                <Medal className={cn('h-5 w-5', medalColors[entry.rank as 1 | 2 | 3])} />
-              ) : (
-                <span className="text-sm font-medium text-gray-500">
-                  {entry.rank}
-                </span>
-              )}
-            </div>
-          )}
-
-          {/* Manager Name */}
-          <div className="flex-1 min-w-0">
-            <p
-              className={cn(
-                'text-sm truncate',
-                entry.isCurrentUser
-                  ? 'font-bold text-blue-900'
-                  : 'font-medium text-gray-700'
-              )}
-            >
-              {entry.managerName}
-              {entry.isCurrentUser && (
-                <span className="ml-1 text-xs text-blue-600">(Вы)</span>
-              )}
-            </p>
-            <p className="text-xs text-gray-500">
-              {entry.contractsCount}{' '}
-              {entry.contractsCount === 1 ? 'сделка' : 'сделок'}
-            </p>
+        {/* Rank or Medal - 1 column */}
+        {showRank && (
+          <div className="col-span-1 flex justify-center">
+            {entry.rank <= 3 ? (
+              <Medal className={`h-4 w-4 ${medalColors[entry.rank as 1 | 2 | 3]}`} />
+            ) : (
+              <span className={`text-xs font-medium ${
+                isDarkMode ? 'text-gray-400' : 'text-gray-500'
+              }`}>
+                {entry.rank}
+              </span>
+            )}
           </div>
+        )}
 
-          {/* Commission */}
-          <div className="text-right flex-shrink-0">
-            <p className="text-sm font-semibold text-gray-900">
-              {formatCurrency(entry.totalCommission, 'USD')}
-            </p>
-          </div>
+        {/* Manager Name - 6 columns */}
+        <div className="col-span-6 min-w-0">
+          <p className={`truncate ${
+            entry.isCurrentUser
+              ? isDarkMode
+                ? 'font-bold text-blue-300'
+                : 'font-bold text-blue-900'
+              : isDarkMode
+                ? 'font-medium text-gray-200'
+                : 'font-medium text-gray-700'
+          }`}>
+            {entry.managerName}
+            {entry.isCurrentUser && (
+              <span className={`ml-1 text-xs ${
+                isDarkMode ? 'text-blue-400' : 'text-blue-600'
+              }`}>
+                (Вы)
+              </span>
+            )}
+          </p>
+        </div>
+
+        {/* Contracts - 2 columns */}
+        <div className="col-span-2 text-center">
+          <span className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+            {entry.contractsCount}
+          </span>
+        </div>
+
+        {/* Commission - 3 columns */}
+        <div className="col-span-3 text-right">
+          <p className={`text-xs font-semibold ${
+            isDarkMode ? 'text-gray-100' : 'text-gray-900'
+          }`}>
+            {formatCurrency(entry.totalCommission, 'USD')}
+          </p>
         </div>
       </div>
     );
   };
 
   return (
-    <div className="space-y-3">
+    <div className={`w-full p-4 rounded-lg border shadow-sm ${
+      isDarkMode ? 'bg-gray-800/90 border-gray-700' : 'bg-white/80 border-gray-200'
+    }`}>
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <h3 className="text-sm font-medium text-gray-700 flex items-center gap-2">
-          <Trophy className="h-4 w-4" />
+      <div className="flex items-center justify-between mb-4">
+        <h3 className={`text-lg font-semibold flex items-center gap-2 ${
+          isDarkMode ? 'text-white' : 'text-gray-900'
+        }`}>
+          <Trophy className={`h-5 w-5 ${isDarkMode ? 'text-yellow-400' : 'text-yellow-500'}`} />
           Лидерборд
         </h3>
-        <span className="text-xs text-gray-500">
-          {leaderboard.length}{' '}
-          {leaderboard.length === 1 ? 'менеджер' : 'менеджеров'}
-        </span>
+        <div className="flex items-center gap-2">
+          <span className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+            {leaderboard.length}{' '}
+            {leaderboard.length === 1 ? 'менеджер' : 'менеджеров'}
+          </span>
+          <button
+            onClick={onThemeToggle}
+            className={`p-2 rounded-lg transition-colors ${
+              isDarkMode
+                ? 'bg-gray-700 text-yellow-400 hover:bg-gray-600'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}
+          >
+            {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          </button>
+        </div>
+      </div>
+
+      {/* Table Header */}
+      <div className={`grid grid-cols-12 gap-2 items-center p-2 mb-3 border-b ${
+        isDarkMode ? 'border-gray-700' : 'border-gray-200'
+      }`}>
+        <div className="col-span-1 text-center">
+          <span className={`text-xs font-medium uppercase tracking-wide ${
+            isDarkMode ? 'text-gray-400' : 'text-gray-600'
+          }`}>
+            #
+          </span>
+        </div>
+        <div className="col-span-6">
+          <span className={`text-xs font-medium uppercase tracking-wide ${
+            isDarkMode ? 'text-gray-400' : 'text-gray-600'
+          }`}>
+            Менеджер
+          </span>
+        </div>
+        <div className="col-span-2 text-center">
+          <span className={`text-xs font-medium uppercase tracking-wide ${
+            isDarkMode ? 'text-gray-400' : 'text-gray-600'
+          }`}>
+            Сделки
+          </span>
+        </div>
+        <div className="col-span-3 text-right">
+          <span className={`text-xs font-medium uppercase tracking-wide ${
+            isDarkMode ? 'text-gray-400' : 'text-gray-600'
+          }`}>
+            Комиссия
+          </span>
+        </div>
       </div>
 
       {/* Top 3 Performers */}
-      <div className="space-y-2">
-        <div className="text-xs font-medium text-gray-600 uppercase tracking-wide mb-2">
-          Топ-3
-        </div>
+      <div className="space-y-1 mb-4">
         {topPerformers.map((entry) => renderEntry(entry, true))}
       </div>
 
       {/* Adjacent Entries (if user is not in top 3) */}
       {adjacentEntries.length > 0 && (
-        <div className="space-y-2 pt-3 border-t border-gray-200">
+        <div className={`space-y-1 pt-3 border-t ${
+          isDarkMode ? 'border-gray-700' : 'border-gray-200'
+        }`}>
           <div className="text-center">
-            <span className="text-gray-400 text-xs">•••</span>
+            <span className={`text-xs ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+              •••
+            </span>
           </div>
           {adjacentEntries.map((entry) => renderEntry(entry, true))}
         </div>
@@ -226,9 +334,11 @@ export function LeaderboardWidget({
 
       {/* User's rank summary if in top 3 */}
       {userEntry && userEntry.rank <= 3 && (
-        <div className="pt-3 border-t border-gray-200">
-          <p className="text-xs text-center text-gray-600">
-            <span className="font-medium text-blue-600">
+        <div className={`pt-3 border-t ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+          <p className={`text-xs text-center ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+            <span className={`font-medium ${
+              isDarkMode ? 'text-blue-400' : 'text-blue-600'
+            }`}>
               Вы на {userEntry.rank} месте
             </span>{' '}
             из {leaderboard.length}
@@ -238,8 +348,8 @@ export function LeaderboardWidget({
 
       {/* User's rank summary if not in top 3 */}
       {userEntry && userEntry.rank > 3 && (
-        <div className="pt-3 border-t border-gray-200">
-          <p className="text-xs text-center text-gray-600">
+        <div className={`pt-3 border-t ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+          <p className={`text-xs text-center ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
             Ваше место: {userEntry.rank} из {leaderboard.length}
           </p>
         </div>

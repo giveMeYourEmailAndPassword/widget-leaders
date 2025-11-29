@@ -17,14 +17,27 @@ const queryClient = new QueryClient({
 });
 
 function App() {
-  const [startDate, setStartDate] = useState<Date>(() => {
-    const date = new Date();
-    date.setMonth(date.getMonth() - 1); // По умолчанию последний месяц
-    return date;
-  });
-  const [endDate, setEndDate] = useState<Date>(() => new Date());
+  // Устанавливаем даты для текущего месяца
+  const getCurrentMonthDates = () => {
+    const now = new Date();
+    const startDate = new Date(now.getFullYear(), now.getMonth(), 1); // Первое число месяца
+    const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0); // Последнее число месяца
+    return { startDate, endDate };
+  };
+
+  const { startDate, endDate } = getCurrentMonthDates();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  // Применяем тему к body при изменении
+  useEffect(() => {
+    if (isDarkMode) {
+      document.body.classList.add('dark');
+    } else {
+      document.body.classList.remove('dark');
+    }
+  }, [isDarkMode]);
 
   // Авторизация при загрузке приложения
   useEffect(() => {
@@ -70,39 +83,13 @@ function App() {
         <div className="leaderboard-container">
           <h1>Лидерборд менеджеров</h1>
 
-          <div className="filters">
-            <div className="date-filters">
-              <div className="date-filter">
-                <label htmlFor="start-date">Начальная дата:</label>
-                <input
-                  id="start-date"
-                  type="date"
-                  value={startDate.toISOString().split("T")[0]}
-                  onChange={(e) =>
-                    setStartDate(
-                      e.target.value ? new Date(e.target.value) : new Date()
-                    )
-                  }
-                />
-              </div>
-              <div className="date-filter">
-                <label htmlFor="end-date">Конечная дата:</label>
-                <input
-                  id="end-date"
-                  type="date"
-                  value={endDate.toISOString().split("T")[0]}
-                  onChange={(e) =>
-                    setEndDate(
-                      e.target.value ? new Date(e.target.value) : new Date()
-                    )
-                  }
-                />
-              </div>
-            </div>
-          </div>
-
           <div className="widget-container">
-            <LeaderboardWidget startDate={startDate} endDate={endDate} />
+            <LeaderboardWidget
+              startDate={startDate}
+              endDate={endDate}
+              isDarkMode={isDarkMode}
+              onThemeToggle={() => setIsDarkMode(!isDarkMode)}
+            />
           </div>
         </div>
       </div>

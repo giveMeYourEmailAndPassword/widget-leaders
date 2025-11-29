@@ -5,7 +5,11 @@
   font-weight: 400;
 
   color: #0f0f0f;
-  background-color: #f6f6f6;
+  background-color: transparent;
+
+  /* Переменные прозрачности */
+  --container-opacity: 0.7;
+  --container-dark-opacity: 0.7;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -16,14 +20,14 @@
 
 .app {
   min-height: 100vh;
-  background-color: #f8f9fa;
+  background-color: transparent;
   padding: 20px;
 }
 
 .leaderboard-container {
   max-width: 1200px;
   margin: 0 auto;
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, var(--container-opacity));
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 24px;
@@ -81,7 +85,8 @@
   box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }
 
-.refresh-button, .retry-button {
+.refresh-button,
+.retry-button {
   background-color: #007bff;
   color: white;
   border: none;
@@ -93,7 +98,8 @@
   transition: background-color 0.2s;
 }
 
-.refresh-button:hover, .retry-button:hover {
+.refresh-button:hover,
+.retry-button:hover {
   background-color: #0056b3;
 }
 
@@ -159,8 +165,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @media (max-width: 768px) {
@@ -204,18 +214,89 @@
   }
 }
 
+/* Классы для принудительной темной темы */
+.dark {
+  color: #f6f6f6;
+  background-color: transparent;
+}
+
+.dark .app {
+  background-color: transparent;
+}
+
+.dark .leaderboard-container {
+  background: rgba(44, 44, 44, var(--container-dark-opacity));
+  color: #f6f6f6;
+}
+
+.dark .leaderboard-container h1 {
+  color: #f6f6f6;
+}
+
+.dark .filters {
+  background-color: #3a3a3a;
+}
+
+.dark .date-filter label {
+  color: #f6f6f6;
+}
+
+.dark .date-filter input {
+  background-color: #4a4a4a;
+  color: #f6f6f6;
+  border-color: #555;
+}
+
+.dark .date-filter input:focus {
+  border-color: #007bff;
+}
+
+.dark .table-header {
+  background-color: #3a3a3a;
+}
+
+.dark .header-cell {
+  color: #f6f6f6;
+  border-color: #555;
+}
+
+.dark .table-row {
+  border-color: #555;
+}
+
+.dark .table-row:hover {
+  background-color: #3a3a3a;
+}
+
+.dark .cell {
+  border-color: #555;
+}
+
+.dark .cell.office {
+  color: #f6f6f6;
+}
+
+.dark .cell.contracts {
+  color: #f6f6f6;
+}
+
+.dark .rank-number {
+  background-color: #4a4a4a;
+  color: #f6f6f6;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     color: #f6f6f6;
-    background-color: #2f2f2f;
+    background-color: transparent;
   }
 
   .app {
-    background-color: #1a1a1a;
+    background-color: transparent;
   }
 
   .leaderboard-container {
-    background: rgba(44, 44, 44, 0.85);
+    background: rgba(44, 44, 44, var(--container-dark-opacity));
     color: #f6f6f6;
   }
 
