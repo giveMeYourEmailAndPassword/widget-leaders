@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "test",
+  "productName": "widget-leaders",
   "version": "0.1.0",
-  "identifier": "com.test.app",
+  "identifier": "com.widget-leaders.app",
   "build": {
     "beforeDevCommand": "pnpm dev",
     "devUrl": "http://localhost:1420",
@@ -12,9 +12,11 @@
   "app": {
     "windows": [
       {
-        "title": "test",
+        "title": "widget-leaders",
         "width": 800,
-        "height": 600
+        "height": 600,
+        "transparent": true,
+        "decorations": true
       }
     ],
     "security": {

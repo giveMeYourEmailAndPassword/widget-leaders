@@ -23,7 +23,7 @@
 .leaderboard-container {
   max-width: 1200px;
   margin: 0 auto;
-  background: white;
+  background: rgba(255, 255, 255, 0.85);
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 24px;
@@ -215,7 +215,7 @@
   }
 
   .leaderboard-container {
-    background: #2c2c2c;
+    background: rgba(44, 44, 44, 0.85);
     color: #f6f6f6;
   }
 
