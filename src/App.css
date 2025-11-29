@@ -1,0 +1,277 @@
+:root {
+  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+
+  color: #0f0f0f;
+  background-color: #f6f6f6;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+.app {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding: 20px;
+}
+
+.leaderboard-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+}
+
+.leaderboard-container h1 {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 32px;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.filters {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  padding: 16px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.date-filters {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.date-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.date-filter label {
+  font-weight: 500;
+  color: #495057;
+  font-size: 14px;
+}
+
+.date-filter input {
+  padding: 8px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.date-filter input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.refresh-button, .retry-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.refresh-button:hover, .retry-button:hover {
+  background-color: #0056b3;
+}
+
+.loading {
+  text-align: center;
+  padding: 48px;
+  font-size: 18px;
+  color: #6c757d;
+}
+
+.error {
+  text-align: center;
+  padding: 48px;
+}
+
+.error p {
+  color: #dc3545;
+  margin-bottom: 16px;
+  font-size: 16px;
+}
+
+.no-data {
+  text-align: center;
+  padding: 48px;
+  color: #6c757d;
+  font-size: 16px;
+}
+
+.widget-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.auth-container {
+  max-width: 400px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.auth-container h1 {
+  color: #2c3e50;
+  margin-bottom: 30px;
+}
+
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #f5c6cb;
+  font-size: 16px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+  .app {
+    padding: 10px;
+  }
+
+  .leaderboard-container {
+    padding: 16px;
+  }
+
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .date-filters {
+    flex-direction: column;
+  }
+
+  .table-header,
+  .table-row {
+    grid-template-columns: 60px 1fr;
+  }
+
+  .header-cell.contracts,
+  .header-cell.commission,
+  .cell.contracts,
+  .cell.commission {
+    display: none;
+  }
+
+  .header-cell {
+    font-size: 12px;
+    padding: 12px 8px;
+  }
+
+  .cell {
+    font-size: 14px;
+    padding: 12px 8px;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color: #f6f6f6;
+    background-color: #2f2f2f;
+  }
+
+  .app {
+    background-color: #1a1a1a;
+  }
+
+  .leaderboard-container {
+    background: #2c2c2c;
+    color: #f6f6f6;
+  }
+
+  .leaderboard-container h1 {
+    color: #f6f6f6;
+  }
+
+  .filters {
+    background-color: #3a3a3a;
+  }
+
+  .date-filter label {
+    color: #f6f6f6;
+  }
+
+  .date-filter input {
+    background-color: #4a4a4a;
+    color: #f6f6f6;
+    border-color: #555;
+  }
+
+  .date-filter input:focus {
+    border-color: #007bff;
+  }
+
+  .table-header {
+    background-color: #3a3a3a;
+  }
+
+  .header-cell {
+    color: #f6f6f6;
+    border-color: #555;
+  }
+
+  .table-row {
+    border-color: #555;
+  }
+
+  .table-row:hover {
+    background-color: #3a3a3a;
+  }
+
+  .cell {
+    border-color: #555;
+  }
+
+  .cell.office {
+    color: #f6f6f6;
+  }
+
+  .cell.contracts {
+    color: #f6f6f6;
+  }
+
+  .rank-number {
+    background-color: #4a4a4a;
+    color: #f6f6f6;
+  }
+}
